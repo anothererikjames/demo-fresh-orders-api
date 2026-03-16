@@ -1,0 +1,38 @@
+{
+  "info": {
+    "name": "demo-fresh-orders-api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "List Orders",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/orders"
+      }
+    },
+    {
+      "name": "Create Order",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"customerId\":\"cust-123\",\"items\":[{\"sku\":\"sku-101\",\"qty\":2}]}"
+        },
+        "url": "{{baseUrl}}/orders"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ]
+}

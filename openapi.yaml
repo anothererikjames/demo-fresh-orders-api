@@ -1,0 +1,22 @@
+openapi: 3.0.3
+info:
+  title: Demo Fresh Orders API
+  version: 1.0.0
+paths:
+  /orders:
+    get:
+      summary: List orders
+      responses:
+        '200':
+          description: OK
+    post:
+      summary: Create order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Created
