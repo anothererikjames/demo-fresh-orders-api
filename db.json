@@ -1,0 +1,14 @@
+{
+  "orders": [
+    { "id": "ord-101", "customerId": "cust-001", "status": "shipped", "total": 149.99 },
+    { "id": "ord-102", "customerId": "cust-002", "status": "pending", "total": 89.50 }
+  ],
+  "shipments": [
+    { "id": "shp-101", "orderId": "ord-101", "carrier": "fedex", "status": "in_transit" },
+    { "id": "shp-102", "orderId": "ord-102", "carrier": "ups", "status": "pending" }
+  ],
+  "line-items": [
+    { "id": "li-101", "orderId": "ord-101", "productId": "prod-001", "quantity": 2, "price": 74.99 },
+    { "id": "li-102", "orderId": "ord-102", "productId": "prod-003", "quantity": 1, "price": 89.50 }
+  ]
+}
