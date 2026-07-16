@@ -1,0 +1,20 @@
+$kind: http-example
+id: 44850cd9-0a82-4cb2-bc83-1b7a86526c33
+request:
+  url: "{{baseUrl}}/orders/:orderId"
+  method: DELETE
+  headers:
+    - key: Authorization
+      value: Bearer <token>
+      description: "Added as a part of security scheme: bearer"
+  pathVariables:
+    - key: orderId
+      value: ord-101
+      description: Unique order identifier
+response:
+  statusCode: 204
+  statusText: No Content
+  body:
+    type: text
+    content: ""
+order: 1000

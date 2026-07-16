@@ -1,0 +1,53 @@
+$kind: http-example
+id: 0243ae62-8410-4a83-bb0b-37d88d8b79d7
+request:
+  url: "{{baseUrl}}/orders?limit=20&cursor=string&status=cancelled"
+  method: GET
+  headers:
+    - key: Accept
+      value: application/json
+    - key: Authorization
+      value: Bearer <token>
+      description: "Added as a part of security scheme: bearer"
+  queryParams:
+    limit: "20"
+    cursor: string
+    status: cancelled
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "data": [
+          {
+            "orderId": "ord-101",
+            "status": "pending",
+            "customerId": "cus-101",
+            "total": 149.99,
+            "currency": "USD",
+            "createdAt": "2026-07-16T20:00:00Z",
+            "updatedAt": "2026-07-16T20:00:00Z",
+            "lineItemCount": 3
+          },
+          {
+            "orderId": "ord-101",
+            "status": "pending",
+            "customerId": "cus-101",
+            "total": 149.99,
+            "currency": "USD",
+            "createdAt": "2026-07-16T20:00:00Z",
+            "updatedAt": "2026-07-16T20:00:00Z",
+            "lineItemCount": 3
+          }
+        ],
+        "meta": {
+          "limit": 20,
+          "count": 1,
+          "nextCursor": null
+        }
+      }
+order: 1000

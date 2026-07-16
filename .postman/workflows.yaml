@@ -1,0 +1,8 @@
+workflows:
+  syncSpecToCollection:
+    - spec: ../index.yaml
+      collection: ../postman/collections/fresh-orders
+    - spec: ../index.yaml
+      collection: ../postman/collections/[Smoke] fresh-orders
+    - spec: ../index.yaml
+      collection: ../postman/collections/[Contract] fresh-orders

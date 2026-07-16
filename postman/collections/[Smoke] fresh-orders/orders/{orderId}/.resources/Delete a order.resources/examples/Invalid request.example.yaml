@@ -1,0 +1,29 @@
+$kind: http-example
+id: 107859fa-70b9-4bbf-b477-92c6fb5ee3b4
+request:
+  url: "{{baseUrl}}/orders/:orderId"
+  method: DELETE
+  headers:
+    - key: Accept
+      value: application/json
+    - key: Authorization
+      value: Bearer <token>
+      description: "Added as a part of security scheme: bearer"
+  pathVariables:
+    - key: orderId
+      value: ord-101
+      description: Unique order identifier
+response:
+  statusCode: 400
+  statusText: Bad Request
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "code": "not_found",
+        "message": "The requested resource was not found",
+        "requestId": "req-9f2a"
+      }
+order: 2000

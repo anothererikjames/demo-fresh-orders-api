@@ -1,0 +1,29 @@
+$kind: http-example
+id: a5f3f4b8-2899-4283-98bb-d4f3c0057124
+request:
+  url: "{{baseUrl}}/orders/:orderId"
+  method: GET
+  headers:
+    - key: Accept
+      value: application/json
+    - key: Authorization
+      value: Bearer <token>
+      description: "Added as a part of security scheme: bearer"
+  pathVariables:
+    - key: orderId
+      value: ord-101
+      description: Unique order identifier
+response:
+  statusCode: 400
+  statusText: Bad Request
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "code": "not_found",
+        "message": "The requested resource was not found",
+        "requestId": "req-9f2a"
+      }
+order: 2000

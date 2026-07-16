@@ -1,0 +1,13 @@
+$kind: http-request
+id: 1da42ee9-2d6b-4cc2-8e81-e3ca20d9a901
+url: "{{baseUrl}}/orders/:orderId"
+method: DELETE
+headers:
+  Accept: application/json
+pathVariables:
+  - key: orderId
+    value: ord-101
+    description: Unique order identifier
+settings: {}
+examples: ./.resources/Delete a order.resources/examples
+order: 3000
