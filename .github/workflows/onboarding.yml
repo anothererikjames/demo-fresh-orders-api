@@ -33,6 +33,11 @@ jobs:
           github-token: ${{ github.token }}
           gh-fallback-token: ${{ secrets.GH_FALLBACK_TOKEN }}
 
+      - id: ci-template
+        name: Encode hardened CI workflow
+        shell: bash
+        run: echo "content=$(base64 < .github/ci-template.yml | tr -d '\n')" >> "$GITHUB_OUTPUT"
+
       - id: repo-sync
         uses: postman-cs/postman-repo-sync-action@v2.1.5
         with:
@@ -48,6 +53,7 @@ jobs:
           monitor-type: cloud
           monitor-cron: ''
           generate-ci-workflow: true
+          ci-workflow-base64: ${{ steps.ci-template.outputs.content }}
           repo-write-mode: commit-and-push
           org-mode: true
           integration-backend: bifrost
