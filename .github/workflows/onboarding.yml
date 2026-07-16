@@ -25,6 +25,8 @@ jobs:
           domain: commerce
           domain-code: FC
           spec-path: index.yaml
+          workspace-team-id: '134987'
+          integration-backend: bifrost
           postman-region: us
           postman-api-key: ${{ secrets.POSTMAN_API_KEY }}
           postman-access-token: ${{ steps.postman-token.outputs.token }}
@@ -47,7 +49,9 @@ jobs:
           monitor-cron: ''
           generate-ci-workflow: true
           repo-write-mode: commit-and-push
-          org-mode: false
+          org-mode: true
+          integration-backend: bifrost
+          team-id: '134987'
           postman-region: us
           postman-api-key: ${{ secrets.POSTMAN_API_KEY }}
           postman-access-token: ${{ steps.postman-token.outputs.token }}
