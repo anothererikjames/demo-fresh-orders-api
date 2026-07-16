@@ -3,6 +3,7 @@ id: 503f3bd6-bd1a-4323-8c9e-49714757764b
 url: "{{baseUrl}}/orders/:orderId"
 method: GET
 headers:
+  X-Mock-Response-Code: "200"
   Accept: application/json
 pathVariables:
   - key: orderId

@@ -3,6 +3,7 @@ id: 9676380c-cd16-4393-ad2d-de440ccc8e93
 url: "{{baseUrl}}/orders?limit=20&cursor=string&status=cancelled"
 method: GET
 headers:
+  X-Mock-Response-Code: "200"
   Accept: application/json
 queryParams:
   limit: "20"

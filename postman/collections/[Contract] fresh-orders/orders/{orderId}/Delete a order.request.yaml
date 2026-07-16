@@ -3,6 +3,7 @@ id: 4f20d0f0-7737-4c77-a603-5b63ad52883b
 url: "{{baseUrl}}/orders/:orderId"
 method: DELETE
 headers:
+  X-Mock-Response-Code: "204"
   Accept: application/json
 pathVariables:
   - key: orderId

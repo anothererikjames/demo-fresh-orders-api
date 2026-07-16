@@ -3,6 +3,7 @@ id: 57e0fe26-bc91-48d2-bae9-1bbe8b69271d
 url: "{{baseUrl}}/orders/:orderId"
 method: PATCH
 headers:
+  X-Mock-Response-Code: "200"
   Content-Type: application/json
   Accept: application/json
 pathVariables:
