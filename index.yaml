@@ -1,0 +1,390 @@
+openapi: 3.0.3
+info:
+  title: Fresh Commerce Orders API
+  version: 1.0.0
+  description: Production-shaped demo service for the Fresh Commerce API Catalog. Manages orders with typed contracts, pagination,
+    health checks, and consistent errors.
+  contact:
+    name: Fresh Commerce Platform Team
+    email: platform@example.com
+  license:
+    name: MIT
+    url: https://opensource.org/license/mit
+servers:
+- url: https://orders.api.fresh-commerce.test
+  description: Catalog runtime placeholder
+security:
+- bearerAuth: []
+tags:
+- name: Order
+  description: Manage orders
+- name: Operations
+  description: Service health
+paths:
+  /health:
+    get:
+      tags:
+      - Operations
+      summary: Check service health
+      operationId: getOrderServiceHealth
+      security: []
+      responses:
+        '200':
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+        '429':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /orders:
+    get:
+      tags:
+      - Order
+      summary: List orders
+      operationId: listOrders
+      parameters:
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/Cursor'
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - pending
+          - confirmed
+          - fulfilled
+          - cancelled
+      responses:
+        '200':
+          description: Page of orders
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderList'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    post:
+      tags:
+      - Order
+      summary: Create a order
+      operationId: createOrder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderCreate'
+      responses:
+        '201':
+          description: A order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /orders/{orderId}:
+    parameters:
+    - $ref: '#/components/parameters/OrderId'
+    get:
+      tags:
+      - Order
+      summary: Get a order
+      operationId: getOrder
+      responses:
+        '200':
+          description: A order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    patch:
+      tags:
+      - Order
+      summary: Update a order
+      operationId: updateOrder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderUpdate'
+      responses:
+        '200':
+          description: A order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    delete:
+      tags:
+      - Order
+      summary: Delete a order
+      operationId: deleteOrder
+      responses:
+        '204':
+          description: Deleted
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    OrderId:
+      name: orderId
+      in: path
+      required: true
+      description: Unique order identifier
+      schema:
+        type: string
+        minLength: 1
+      example: ord-101
+    Limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      schema:
+        type: string
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalError:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Order:
+      type: object
+      required:
+      - orderId
+      - status
+      - customerId
+      - total
+      - currency
+      - createdAt
+      - updatedAt
+      properties:
+        orderId:
+          type: string
+          example: ord-101
+        status:
+          type: string
+          enum:
+          - pending
+          - confirmed
+          - fulfilled
+          - cancelled
+          example: pending
+        customerId:
+          type: string
+          example: cus-101
+        total:
+          type: number
+          format: double
+          minimum: 0
+          example: 149.99
+        currency:
+          type: string
+          enum:
+          - USD
+          - EUR
+          - GBP
+          example: USD
+        lineItemCount:
+          type: integer
+          minimum: 1
+          example: 3
+        createdAt:
+          type: string
+          format: date-time
+          example: '2026-07-16T20:00:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2026-07-16T20:00:00Z'
+      additionalProperties: false
+    OrderCreate:
+      type: object
+      required:
+      - customerId
+      - total
+      - currency
+      properties:
+        status:
+          type: string
+          enum:
+          - pending
+          - confirmed
+          - fulfilled
+          - cancelled
+          example: pending
+        customerId:
+          type: string
+          example: cus-101
+        total:
+          type: number
+          format: double
+          minimum: 0
+          example: 149.99
+        currency:
+          type: string
+          enum:
+          - USD
+          - EUR
+          - GBP
+          example: USD
+        lineItemCount:
+          type: integer
+          minimum: 1
+          example: 3
+      additionalProperties: false
+    OrderUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        status:
+          type: string
+          enum:
+          - pending
+          - confirmed
+          - fulfilled
+          - cancelled
+          example: pending
+        customerId:
+          type: string
+          example: cus-101
+        total:
+          type: number
+          format: double
+          minimum: 0
+          example: 149.99
+        currency:
+          type: string
+          enum:
+          - USD
+          - EUR
+          - GBP
+          example: USD
+        lineItemCount:
+          type: integer
+          minimum: 1
+          example: 3
+      additionalProperties: false
+    OrderList:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+        meta:
+          $ref: '#/components/schemas/PageMeta'
+      additionalProperties: false
+    PageMeta:
+      type: object
+      required:
+      - limit
+      - count
+      properties:
+        limit:
+          type: integer
+          example: 20
+        count:
+          type: integer
+          example: 1
+        nextCursor:
+          type: string
+          nullable: true
+          example: null
+      additionalProperties: false
+    Health:
+      type: object
+      required:
+      - status
+      - service
+      - version
+      properties:
+        status:
+          type: string
+          enum:
+          - ok
+          example: ok
+        service:
+          type: string
+          example: orders
+        version:
+          type: string
+          example: 1.0.0
+      additionalProperties: false
+    Error:
+      type: object
+      required:
+      - code
+      - message
+      - requestId
+      properties:
+        code:
+          type: string
+          example: not_found
+        message:
+          type: string
+          example: The requested resource was not found
+        requestId:
+          type: string
+          example: req-9f2a
+      additionalProperties: false

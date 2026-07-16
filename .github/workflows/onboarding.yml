@@ -1,0 +1,67 @@
+name: PEAS Catalog Onboarding
+
+on:
+  workflow_dispatch:
+
+jobs:
+  onboarding:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+
+      - id: postman-token
+        uses: postman-cs/postman-resolve-service-token-action@v2
+        with:
+          postman-api-key: ${{ secrets.POSTMAN_API_KEY }}
+          postman-region: us
+
+      - id: bootstrap
+        uses: postman-cs/postman-bootstrap-action@v2.9.4
+        with:
+          project-name: fresh-orders
+          domain: commerce
+          domain-code: FC
+          spec-path: index.yaml
+          postman-region: us
+          postman-api-key: ${{ secrets.POSTMAN_API_KEY }}
+          postman-access-token: ${{ steps.postman-token.outputs.token }}
+          github-token: ${{ github.token }}
+          gh-fallback-token: ${{ secrets.GH_FALLBACK_TOKEN }}
+
+      - id: repo-sync
+        uses: postman-cs/postman-repo-sync-action@v2.1.5
+        with:
+          project-name: fresh-orders
+          workspace-id: ${{ steps.bootstrap.outputs.workspace-id }}
+          baseline-collection-id: ${{ steps.bootstrap.outputs.baseline-collection-id }}
+          smoke-collection-id: ${{ steps.bootstrap.outputs.smoke-collection-id }}
+          contract-collection-id: ${{ steps.bootstrap.outputs.contract-collection-id }}
+          spec-id: ${{ steps.bootstrap.outputs.spec-id }}
+          spec-path: index.yaml
+          environments-json: '["prod","stage"]'
+          system-env-map-json: '{"prod":"019db120-703b-7dd7-9416-75a588f130d0","stage":"019db122-35e6-7ccf-b965-81a8b4236d95"}'
+          monitor-type: cloud
+          monitor-cron: ''
+          generate-ci-workflow: true
+          repo-write-mode: commit-and-push
+          org-mode: false
+          postman-region: us
+          postman-api-key: ${{ secrets.POSTMAN_API_KEY }}
+          postman-access-token: ${{ steps.postman-token.outputs.token }}
+          github-token: ${{ github.token }}
+          gh-fallback-token: ${{ secrets.GH_FALLBACK_TOKEN }}
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "workspace-url: ${{ steps.bootstrap.outputs.workspace-url }}"
+          echo "spec-id:       ${{ steps.bootstrap.outputs.spec-id }}"
+          echo "baseline:      ${{ steps.bootstrap.outputs.baseline-collection-id }}"
+          echo "smoke:         ${{ steps.bootstrap.outputs.smoke-collection-id }}"
+          echo "contract:      ${{ steps.bootstrap.outputs.contract-collection-id }}"
+          echo "mock-url:      ${{ steps.repo-sync.outputs.mock-url }}"
+          echo "monitor-id:    ${{ steps.repo-sync.outputs.monitor-id }}"
+          echo "repo-sync:     ${{ steps.repo-sync.outputs.repo-sync-summary-json }}"

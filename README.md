@@ -1,27 +1,24 @@
-# demo-fresh-orders-api
+# Fresh Commerce Orders API
 
-Demo Orders API repository for Postman API Catalog and Insights.
-
-## Purpose
-
-This repository represents a lightweight service used to demonstrate:
-
-- Postman API Catalog integration
-- Postman Insights runtime traffic
-- GitHub repository linkage
-- CI/CD metadata and documentation
+Production-shaped demo service for the Erik James V12 Postman API Catalog.
 
 ## Endpoints
 
+- `GET /health`
 - `GET /orders`
 - `POST /orders`
+- `GET /orders/{orderId}`
+- `PATCH /orders/{orderId}`
+- `DELETE /orders/{orderId}`
 
-## Files
+## Run locally
 
-- `openapi.yaml`: OpenAPI definition
-- `postman_collection.json`: Postman collection for the service
-- `src/server.js`: Minimal local stub
+```sh
+npm start
+```
 
-## Notes
+The API listens on `http://localhost:3000`. Its OpenAPI 3.0 contract is [`index.yaml`](index.yaml).
 
-The Kubernetes demo cluster uses a JSON-backed mock implementation for runtime traffic generation.
+## Catalog automation
+
+The PEAS onboarding workflow generates a Postman workspace, baseline, smoke, and contract collections, a mock, disabled-by-default monitor, Production and Staging environments, Git linkage, CI, and API Catalog placement.
