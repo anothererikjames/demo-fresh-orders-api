@@ -1,5 +1,5 @@
 const http = require("http");
-const { randomUUID } = require("crypto");
+const { randomBytes, randomUUID } = require("crypto");
 
 const service = "orders";
 const resourcePath = "/orders";
@@ -23,11 +23,37 @@ function readJson(req) {
   });
 }
 
+function outboundTraceparent(inbound) {
+  const match = String(inbound || "").match(/^([0-9a-f]{2})-([0-9a-f]{32})-[0-9a-f]{16}-([0-9a-f]{2})$/i);
+  const version = match ? match[1] : "00";
+  const traceId = match ? match[2] : randomBytes(16).toString("hex");
+  const flags = match ? match[3] : "01";
+  return `${version}-${traceId}-${randomBytes(8).toString("hex")}-${flags}`;
+}
+
+function callDependency(url, traceparent) {
+  return new Promise(resolve => {
+    const request = http.get(url, { headers: { traceparent } }, response => {
+      response.resume();
+      response.on("end", resolve);
+    });
+    request.setTimeout(1000, () => request.destroy());
+    request.on("error", resolve);
+  });
+}
+
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, "http://localhost");
   if (url.pathname === "/health" && req.method === "GET") return send(res, 200, { status: "ok", service, version: "1.0.0" });
 
   if (url.pathname === resourcePath && req.method === "GET") {
+    const traceparent = outboundTraceparent(req.headers.traceparent);
+    await Promise.allSettled([
+      callDependency("http://demo-fresh-inventory-api/products", traceparent),
+      callDependency("http://demo-fresh-payments-api/transactions", traceparent),
+      callDependency("http://demo-fresh-recommendations-api/recommendations", traceparent),
+      callDependency("http://demo-fresh-shipping-api/shipments", traceparent)
+    ]);
     const status = url.searchParams.get("status");
     const data = status ? items.filter(item => item.status === status) : items;
     return send(res, 200, { data, meta: { limit: 20, count: data.length, nextCursor: null } });
